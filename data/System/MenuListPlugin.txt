@@ -1,20 +1,91 @@
 ---+!! !MenuListPlugin
 <!--
 One line description, required for extensions repository catalog.
-   * Set SHORTDESCRIPTION = Folding menu list
+      * Set SHORTDESCRIPTION = Folding menu list
 -->
 %SHORTDESCRIPTION%
 
 %TOC%
 
 ---++ Usage
-Add =%<nop>MENULIST{}%= before a mult-level bullet list.  If the currently viewed topic is in the list, 
-display the items leading up to this item, 
-all the nodes at the same level, and all this item's direct siblings.
+Create a topic (in this example =MenuTopic=), containing a multi-level bullet list of topics
+you want to make a folding menu with.
+
+Then add =%<nop>MENULIST{topic="MenuTopic"}%= to your sidebar. 
+
+If the currently viewed topic is in the list, MenuListPlugin will open up all the nodes leading up to where it is, and direct child nodes of this topic.
 
 ---++ Examples
 
+if =MenuTopic= contains 
 
+<verbatim>
+   * FoswikiSiteSkin 
+      * FoswikiSiteSkinNavigationTemplate 
+   * MoveableTypeSkin 
+   * PatternSkin 
+      * PatternSkinCss 
+      * PatternSkinColorSettings 
+      * PatternSkinCssCookbook 
+         * PatternSkinCssCookbookCenterPage 
+            * PatternSkinCssCookbookCenterPageBorder 
+         * PatternSkinCssCookbookEditTableStyle 
+         * PatternSkinCssCookbookFonts 
+         * PatternSkinCssCookbookNoLeftBar 
+         * PatternSkinCssCookbookNoTopBar 
+      * PatternSkinCustomization 
+      * PatternSkinElements 
+      * PatternSkinGraphics 
+      * PatternSkinHeaderArt 
+      * PatternSkinWebCreateNewTopicTemplate 
+   * PlainSkin 
+   * PrintSkin 
+   * Skins 
+      * SkinBrowser 
+      * SkinTemplates 
+   * SlionSkin 
+      * SlionSkinColorSettings 
+      * SlionSkinCss 
+      * SlionSkinCssCookbook 
+         * SlionSkinCssCookbookCenterPageBorder 
+         * SlionSkinCssCookbookCenterPage 
+         * SlionSkinCssCookbookEditTableStyle 
+         * SlionSkinCssCookbookFonts 
+         * SlionSkinCssCookbookNoLeftBar 
+         * SlionSkinCssCookbookNoTopBar 
+      * SlionSkinCustomization 
+      * SlionSkinElements 
+      * SlionSkinGraphics 
+      * SlionSkinHeaderArt 
+      * SlionSkinWebCreateNewTopicTemplate 
+   * WidgetsSkin 
+</verbatim>
+
+and you added  =%<nop>MENULIST{topic="MenuTopic"}%= to the WebLeftBar topic i the System web, then navigated to PatternSkinCssCookbook
+you would get
+
+   * FoswikiSiteSkin 
+   * MoveableTypeSkin 
+   * PatternSkin 
+      * PatternSkinCss 
+      * PatternSkinColorSettings 
+      * PatternSkinCssCookbook 
+         * PatternSkinCssCookbookCenterPage 
+         * PatternSkinCssCookbookEditTableStyle 
+         * PatternSkinCssCookbookFonts 
+         * PatternSkinCssCookbookNoLeftBar 
+         * PatternSkinCssCookbookNoTopBar 
+      * PatternSkinCustomization 
+      * PatternSkinElements 
+      * PatternSkinGraphics 
+      * PatternSkinHeaderArt 
+      * PatternSkinWebCreateNewTopicTemplate 
+   * PlainSkin 
+   * PrintSkin 
+   * Skins 
+   * SlionSkin 
+   * WidgetsSkin 
+   
 ---++ Installation Instructions
 
 %$INSTALL_INSTRUCTIONS%
@@ -22,13 +93,14 @@ all the nodes at the same level, and all this item's direct siblings.
 ---++ Info
 
 Many thanks to the following sponsors for supporting this work:
-   * Acknowledge any sponsors here
+      * http://blackfin.com.au/
 
 |  Author(s): | Foswiki:Main.SvenDowideit |
 |  Copyright: | &copy; 2009 SvenDowideit@fosiki.com |
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL 3 (Gnu General Public License)]] |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+| 23 Mar 2009: | initial release |
 |  Dependencies: | %$DEPENDENCIES% |
 |  Home page: | http://foswiki.org/bin/view/Extensions/MenuListPlugin |
 |  Support: | http://foswiki.org/bin/view/Support/MenuListPlugin |
