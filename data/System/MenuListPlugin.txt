@@ -1,0 +1,36 @@
+---+!! !MenuListPlugin
+<!--
+One line description, required for extensions repository catalog.
+   * Set SHORTDESCRIPTION = Folding menu list
+-->
+%SHORTDESCRIPTION%
+
+%TOC%
+
+---++ Usage
+Add =%<nop>MENULIST{}%= before a mult-level bullet list.  If the currently viewed topic is in the list, 
+display the items leading up to this item, 
+all the nodes at the same level, and all this item's direct siblings.
+
+---++ Examples
+
+
+---++ Installation Instructions
+
+%$INSTALL_INSTRUCTIONS%
+
+---++ Info
+
+Many thanks to the following sponsors for supporting this work:
+   * Acknowledge any sponsors here
+
+|  Author(s): | Foswiki:Main.SvenDowideit |
+|  Copyright: | &copy; 2009 SvenDowideit@fosiki.com |
+|  License: | [[http://www.gnu.org/licenses/gpl.html][GPL 3 (Gnu General Public License)]] |
+|  Version: | %$VERSION% |
+|  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  Dependencies: | %$DEPENDENCIES% |
+|  Home page: | http://foswiki.org/bin/view/Extensions/MenuListPlugin |
+|  Support: | http://foswiki.org/bin/view/Support/MenuListPlugin |
+
+<!-- Do _not_ attempt to edit this topic; it is auto-generated. -->
