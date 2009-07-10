@@ -61,7 +61,7 @@ if =MenuTopic= contains
    * WidgetsSkin 
 </verbatim>
 
-and you added  =%<nop>MENULIST{topic="MenuTopic"}%= to the WebLeftBar topic i the System web, then navigated to PatternSkinCssCookbook
+and you added  =%<nop>MENULIST{topic="MenuTopic"}%= to the WebLeftBar topic in the System web, then navigated to PatternSkinCssCookbook
 you would get
 
    * FoswikiSiteSkin 
