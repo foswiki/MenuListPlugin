@@ -24,7 +24,7 @@ require Foswiki::Plugins;    # For the API version
 
 our $VERSION = '$Rev: 3193 $';
 our $RELEASE = '$Date: 2009-03-20 03:32:09 +1100 (Fri, 20 Mar 2009) $';
-our $SHORTDESCRIPTION = 'Folding menu list';
+our $SHORTDESCRIPTION = 'dynamic Folding menu list';
 our $NO_PREFS_IN_TOPIC = 1;
 our $baseTopic;
 

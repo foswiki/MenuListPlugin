@@ -15,6 +15,13 @@ Then add =%<nop>MENULIST{topic="MenuTopic"}%= to your sidebar.
 
 If the currently viewed topic is in the list, MenuListPlugin will open up all the nodes leading up to where it is, and direct child nodes of this topic.
 
+---++ %<nop>MENULIST% parameters
+| *parameter* | *values* | *default* |
+| =mode= | collapse,full | =full= |
+| =level= | what level of menu to show (single integer) | =all= |
+| =format=, =separator= | see %SYSTEMWEB%.FormattedSearch | bullet list |
+
+
 ---++ Examples
 
 if =MenuTopic= contains 
@@ -100,7 +107,8 @@ Many thanks to the following sponsors for supporting this work:
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL 3 (Gnu General Public License)]] |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
-| 23 Mar 2009: | initial release |
+|  22 Jul 2009: | add non-collapse mode, level and formatting so we can show a menu in a table |
+|  23 Mar 2009: | initial release |
 |  Dependencies: | %$DEPENDENCIES% |
 |  Home page: | http://foswiki.org/bin/view/Extensions/MenuListPlugin |
 |  Support: | http://foswiki.org/bin/view/Support/MenuListPlugin |
