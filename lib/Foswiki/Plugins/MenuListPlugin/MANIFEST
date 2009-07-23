@@ -1,4 +1,5 @@
 # Release manifest for MenuListPlugin
 data/System/MenuListPlugin.txt 0644 Documentation
 lib/Foswiki/Plugins/MenuListPlugin.pm 0644 Perl module
+data/System/MenuListDefault.txt
 

@@ -26,6 +26,7 @@ our $VERSION = '$Rev: 3193 $';
 our $RELEASE = '$Date: 2009-03-20 03:32:09 +1100 (Fri, 20 Mar 2009) $';
 our $SHORTDESCRIPTION = 'dynamic Folding menu list';
 our $NO_PREFS_IN_TOPIC = 1;
+our $baseWeb;
 our $baseTopic;
 
 sub initPlugin {
@@ -39,6 +40,7 @@ sub initPlugin {
     }
     
     $baseTopic = $topic;
+    $baseWeb = $web;
 
     Foswiki::Func::registerTagHandler( 'MENULIST', \&MENULIST );
 
@@ -78,7 +80,10 @@ sub MENULIST {
     foreach my $line (split(/[\n\r]+/, $string)) {
        if ($line =~ /^(\t+)\*\s+(.*)$/) {
           push(@list, {tabs=>$1, length=>length($1), string=>$2});
-          if (($currentTopicIndex < 0) and ($list[$#list]{string} =~ /.*$baseTopic.*/)) {
+#	  my ($w, $t) = Foswiki::Func::normalizeWebTopicName($baseWeb, $list[$#list]{string});
+          if (($currentTopicIndex < 0) and 
+		($list[$#list]{string} =~ /.*$baseWeb\.$baseTopic.*/)
+		) {
              $currentTopicIndex = $#list;
           }
        } else {

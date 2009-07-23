@@ -1,0 +1,9 @@
+
+---++ default menu definition used by %SYSTEMWEB%.MenuListPlugin
+   * %SYSTEMWEB%.UserRegistration
+%WEBLIST{
+"   * [[$name.%HOMETOPIC%][$name]]
+      * [[$name.WebChanges][Changes]]
+      * [[$name.WebSearch][Search]]
+      * [[$name.WebNotify][Subscribe]]"
+}%
