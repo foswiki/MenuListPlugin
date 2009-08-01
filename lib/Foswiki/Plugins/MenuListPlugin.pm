@@ -13,7 +13,6 @@
 # GNU General Public License for more details, published at
 # http://www.gnu.org/copyleft/gpl.html
 
-
 package Foswiki::Plugins::MenuListPlugin;
 
 # Always use strict to enforce variable scoping
@@ -22,8 +21,8 @@ use strict;
 require Foswiki::Func;       # The plugins API
 require Foswiki::Plugins;    # For the API version
 
-our $VERSION = '$Rev: 3193 $';
-our $RELEASE = '$Date: 2009-03-20 03:32:09 +1100 (Fri, 20 Mar 2009) $';
+our $VERSION          = '$Rev: 3193 $';
+our $RELEASE          = '$Date: 2009-03-20 03:32:09 +1100 (Fri, 20 Mar 2009) $';
 our $SHORTDESCRIPTION = 'dynamic Folding menu list';
 our $NO_PREFS_IN_TOPIC = 1;
 our $baseWeb;
@@ -38,9 +37,9 @@ sub initPlugin {
             __PACKAGE__, ' and Plugins.pm' );
         return 0;
     }
-    
+
     $baseTopic = $topic;
-    $baseWeb = $web;
+    $baseWeb   = $web;
 
     Foswiki::Func::registerTagHandler( 'MENULIST', \&MENULIST );
 
@@ -50,7 +49,8 @@ sub initPlugin {
 # The function used to handle the %EXAMPLETAG{...}% macro
 # You would have one of these for each macro you want to process.
 sub MENULIST {
-    my($session, $params, $theTopic, $theWeb) = @_;
+    my ( $session, $params, $theTopic, $theWeb ) = @_;
+
     # $session  - a reference to the Foswiki session object (if you don't know
     #             what this is, just ignore it)
     # $params=  - a reference to a Foswiki::Attrs object containing
@@ -66,112 +66,150 @@ sub MENULIST {
     # For example, %EXAMPLETAG{'hamburger' sideorder="onions"}%
     # $params->{_DEFAULT} will be 'hamburger'
     # $params->{sideorder} will be 'onions'
-    
-    my $INCLUDE = '%INCLUDE{"'.$params->{topic}.'"}%';
-    my $string = Foswiki::Func::expandCommonVariables($INCLUDE);
-    $string =~ s/ {3}/\t/g;     #simplify to tabs
+
+    my $INCLUDE = '%INCLUDE{"' . $params->{topic} . '"}%';
+    my $string  = Foswiki::Func::expandCommonVariables($INCLUDE);
+    $string =~ s/ {3}/\t/g;    #simplify to tabs
     my @out;
     my @list;
     my $currentTopicIndex = -1;
-    
+
+    my $from = 0;
+    my $to   = 9999;
+
     #parse into an array containing depth and the string
     #and see if we find the current basetopic being requested
     #TODO: consider what happens with baseweb, but be careful
-    foreach my $line (split(/[\n\r]+/, $string)) {
-       if ($line =~ /^(\t+)\*\s+(.*)$/) {
-          push(@list, {tabs=>$1, length=>length($1), string=>$2});
+    foreach my $line ( split( /[\n\r]+/, $string ) ) {
+        if ( $line =~ /^(\t+)\*\s+(.*)$/ ) {
+            push( @list, { tabs => $1, length => length($1), string => $2 } );
+
 #	  my ($w, $t) = Foswiki::Func::normalizeWebTopicName($baseWeb, $list[$#list]{string});
-          if (($currentTopicIndex < 0) and 
-		($list[$#list]{string} =~ /.*$baseWeb\.$baseTopic.*/)
-		) {
-             $currentTopicIndex = $#list;
-          }
-       } else {
-          #not a bullet
-#          last;
-       }
+            if (    ( $currentTopicIndex < 0 )
+                and ( $list[$#list]{string} =~ /.*$baseWeb\.$baseTopic.*/ ) )
+            {
+                $currentTopicIndex = $#list;
+            }
+        }
+        else {
+
+            #not a bullet
+            #          last;
+        }
     }
 
-	my $mode = $params->{mode} || 'collapse';
-    
-	if ($mode eq 'collapse') {
-	    #output spec - nothing if we're not even in the tree.
-	    if ($currentTopicIndex >= 0) {
-	      # show tree of options back from the current one
-	      #find the node's root
-	      my $startIdx = $currentTopicIndex;
-	      for (; ($startIdx > 0) and ($list[$startIdx]{length} > 1); $startIdx--) {}
+    my $mode = $params->{mode} || 'collapse';
 
-	#go backwards, then reverse later
-	      my $lastIdx = $currentTopicIndex;
-	      my $currentLevel = $list[$currentTopicIndex]{length};
-	      for (my $idx = $lastIdx; $idx > 0; $idx--) {
-		 if (($list[$idx]{length} == 1)) {      # 
-			push(@out, $idx);
-		    last;
-		 }
-		 if ($list[$idx]{length} <= $currentLevel) {
-		    $currentLevel = $list[$idx]{length};
-			push(@out, $idx);
-		 }
-	      }
-	      @out = reverse(@out);
-		    
-	      #if the current node has childern, show those
-	      $lastIdx = $currentTopicIndex+1;
-	      if ($list[$lastIdx]{length} == (1+$list[$currentTopicIndex]{length})) {
-		 for (my $idx = $lastIdx; $idx < $#list; $idx++) {
-		    $lastIdx = $idx;
-		    if ($list[$idx]{length} <= $list[$currentTopicIndex]{length}) {          #output until we go to level of the current again.
-		       last;
-		    }
-		    if ($list[$idx]{length} == 1+$list[$currentTopicIndex]{length}) {     
-			push(@out, $idx);
-		    }
-		 }
-	      }
-	      $currentLevel = $list[$lastIdx-1]{length};
-	      for (my $idx = $lastIdx; $idx < $#list; $idx++) {
-		 if (($list[$idx]{length} == 1)) {# or ($list[$idx]{length} < $list[$currentTopicIndex]{length})) {          #output until we go below the level of the current again.
-		    last;
-		 }
-		 if ($list[$idx]{length} <= $currentLevel) {
-		    $currentLevel = $list[$idx]{length};
-			push(@out, $idx);
-		 }
-	      }
-	    }
-	} elsif ($mode eq 'all') {
-		@out = (0..$#list);
-	}
-    
-my $from = 0;
-my $to = 9999;
-if (defined($params->{showlevel}) && ($params->{showlevel} =~ /(\d*)/)) {
-	$from = $to = $1;
-}
+    if ( $mode eq 'collapse' ) {
+        if ( $currentTopicIndex == -1 ) {
 
-my $format = $params->{format} || '$tabs* $value';
-my $separator = $params->{separator} || "\n";
+            #original spec - nothing if we're not even in the tree.
+            if ( Foswiki::Func::isTrue( $params->{quiet} ) ) {
 
-	my @show;
-	foreach my $idx (@out) {
-		if (($list[$idx]{length} >= $from) &&
-			($list[$idx]{length} <= $to)) {
-#			if ($list[$idx]{length} == 1) {
-#				'---++++ '.$list[$idx]{string}
-#			} else{
-#				$list[$idx]{tabs}.'* '.$list[$_]{string}
-#			}
-			my $str = $format;
-			$str =~ s/\$tabs/$list[$idx]{tabs}/g;
-			$str =~ s/\$depth/$list[$idx]{length}/g;
-			$str =~ s/\$value/$list[$idx]{string}/g;
-			push(@show, $str);
-		}
-	}
+            }
+            else {
 
-	join($separator, @show);
+                #instead, show all first level items
+                @out = ( 0 .. $#list );
+                $from = $to = 1;
+            }
+        }
+        else {
+
+            # show tree of options back from the current one
+            #find the node's root
+            my $startIdx = $currentTopicIndex;
+            for (
+                ;
+                ( $startIdx > 0 ) and ( $list[$startIdx]{length} > 1 ) ;
+                $startIdx--
+              )
+            {
+            }
+
+            #go backwards, then reverse later
+            my $lastIdx      = $currentTopicIndex;
+            my $currentLevel = $list[$currentTopicIndex]{length};
+            for ( my $idx = $lastIdx ; $idx > 0 ; $idx-- ) {
+                if ( ( $list[$idx]{length} == 1 ) ) {    #
+                    push( @out, $idx );
+                    last;
+                }
+                if ( $list[$idx]{length} <= $currentLevel ) {
+                    $currentLevel = $list[$idx]{length};
+                    push( @out, $idx );
+                }
+            }
+            @out = reverse(@out);
+
+            #if the current node has childern, show those
+            $lastIdx = $currentTopicIndex + 1;
+            if (
+                ( $lastIdx <= $#list )
+                and ( $list[$lastIdx]{length} ==
+                    ( 1 + $list[$currentTopicIndex]{length} ) )
+              )
+            {
+                for ( my $idx = $lastIdx ; $idx < $#list ; $idx++ ) {
+                    $lastIdx = $idx;
+                    if ( $list[$idx]{length} <=
+                        $list[$currentTopicIndex]{length} )
+                    {    #output until we go to level of the current again.
+                        last;
+                    }
+                    if ( $list[$idx]{length} ==
+                        1 + $list[$currentTopicIndex]{length} )
+                    {
+                        push( @out, $idx );
+                    }
+                }
+            }
+            $currentLevel = $list[ $lastIdx - 1 ]{length};
+            for ( my $idx = $lastIdx ; $idx < $#list ; $idx++ ) {
+                if ( ( $list[$idx]{length} == 1 ) )
+                { # or ($list[$idx]{length} < $list[$currentTopicIndex]{length})) {          #output until we go below the level of the current again.
+                    last;
+                }
+                if ( $list[$idx]{length} <= $currentLevel ) {
+                    $currentLevel = $list[$idx]{length};
+                    push( @out, $idx );
+                }
+            }
+        }
+    }
+    elsif ( $mode eq 'all' ) {
+        @out = ( 0 .. $#list );
+    }
+
+    if ( defined( $params->{showlevel} )
+        && ( $params->{showlevel} =~ /(\d*)/ ) )
+    {
+        $from = $to = $1;
+    }
+
+    my $format    = $params->{format}    || '$tabs* $value';
+    my $separator = $params->{separator} || "\n";
+
+    my @show;
+    foreach my $idx (@out) {
+        if (   ( $list[$idx]{length} >= $from )
+            && ( $list[$idx]{length} <= $to ) )
+        {
+
+            #			if ($list[$idx]{length} == 1) {
+            #				'---++++ '.$list[$idx]{string}
+            #			} else{
+            #				$list[$idx]{tabs}.'* '.$list[$_]{string}
+            #			}
+            my $str = $format;
+            $str =~ s/\$tabs/$list[$idx]{tabs}/g;
+            $str =~ s/\$depth/$list[$idx]{length}/g;
+            $str =~ s/\$value/$list[$idx]{string}/g;
+            push( @show, $str );
+        }
+    }
+
+    join( $separator, @show );
 }
 
 1;

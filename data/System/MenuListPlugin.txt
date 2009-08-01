@@ -20,6 +20,8 @@ If the currently viewed topic is in the list, MenuListPlugin will open up all th
 | =mode= | collapse,full | =full= |
 | =level= | what level of menu to show (single integer) | =all= |
 | =format=, =separator= | see %SYSTEMWEB%.FormattedSearch | bullet list |
+| =quiet= | in =collapse= mode, if you are not on a topic that is listed in the Menu topic, show nothing at all | false |
+| =showlevel= | filters to only show menu entries of that level (works in both collapse and full mode) | unset |
 
 
 ---++ Examples
@@ -107,6 +109,7 @@ Many thanks to the following sponsors for supporting this work:
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL 3 (Gnu General Public License)]] |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  1 Aug 2009: | added =quiet= param for collapsed view |
 |  22 Jul 2009: | add non-collapse mode, level and formatting so we can show a menu in a table |
 |  23 Mar 2009: | initial release |
 |  Dependencies: | %$DEPENDENCIES% |
