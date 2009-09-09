@@ -1,3 +1,4 @@
+%META:TOPICPARENT{name="Plugins"}%
 ---+!! !MenuListPlugin
 <!--
 One line description, required for extensions repository catalog.
