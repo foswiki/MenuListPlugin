@@ -1,0 +1,29 @@
+%META:TOPICINFO{author="BaseUserMapping_333" date="1251203758" format="1.1" reprev="1.3" version="1.3"}%
+      * [[System.UserToolsCategory][User Tools]]
+         * [[System.WebTopicList][ %ICON{"index"}% %MAKETEXT{"Index"}%]]
+         * [[%BASEWEB%.WebSearch][ %ICON{"searchtopic"}% %MAKETEXT{"Search"}%]]
+         * [[System.WebChanges][ %ICON{"changes"}% %MAKETEXT{"Changes"}%]]
+         * [[System.WebNotify][ %ICON{"notify"}% %MAKETEXT{"Notifications"}%]]
+         * [[System.WebRss][ %ICON{"feed"}% %MAKETEXT{"RSS Feed"}%]]
+         * [[System.WebStatistics][ %ICON{"statistics"}% %MAKETEXT{"Statistics"}%]]
+         * [[System.WebPreferences][ %ICON{"wrench"}% %MAKETEXT{"Preferences"}%]]
+      * [[System.UserDocumentationCategory][User Documentation]]
+         * System.BeginnersStartHere
+         * System.TextFormattingRules
+         * [[System.Macros][Macros]]
+         * System.FormattedSearch
+         * System.QuerySearch
+         * System.DocumentGraphics
+         * System.SkinBrowser
+         * System.InstalledPlugins
+      * [[System.AdminToolsCategory][Admin Tools]]
+         * [[System.ReferenceManual][Reference Manual]]
+         * System.AdminToolsCategory
+         * System.InterWikis
+         * System.ManagingWebs
+         * System.SiteTools
+         * System.%WIKIPREFSTOPIC%
+         * System.%WEBPREFSTOPIC%
+      * [[System.AdminDocumentationCategory][Admin Documentation]]
+      * [[System.DeveloperDocumentationCategory][Developer Doc]]
+
