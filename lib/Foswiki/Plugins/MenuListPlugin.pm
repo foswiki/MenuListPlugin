@@ -186,6 +186,11 @@ sub MENULIST {
     {
         $from = $to = $1;
     }
+    if ( defined( $params->{levels} )
+        && ( $params->{levels} =~ /(\d*)/ ) )
+    {
+        $to = $from + $1;
+    }
 
     my $format    = $params->{format}    || '$tabs* $value';
     my $separator = $params->{separator} || "\n";
@@ -195,12 +200,10 @@ sub MENULIST {
         if (   ( $list[$idx]{length} >= $from )
             && ( $list[$idx]{length} <= $to ) )
         {
-
-            #			if ($list[$idx]{length} == 1) {
-            #				'---++++ '.$list[$idx]{string}
-            #			} else{
-            #				$list[$idx]{tabs}.'* '.$list[$_]{string}
-            #			}
+        	if ($from > 0) {
+        		$list[$idx]{tabs} = substr($list[$idx]{tabs}, $from-1);
+        	}
+        	
             my $str = $format;
             $str =~ s/\$tabs/$list[$idx]{tabs}/g;
             $str =~ s/\$depth/$list[$idx]{length}/g;
