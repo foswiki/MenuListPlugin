@@ -68,9 +68,8 @@ sub MENULIST {
     # $params->{sideorder} will be 'onions'
 
     my $INCLUDE = '%INCLUDE{"' . $params->{topic} . '"}%';
-    my $string  = Foswiki::Func::expandCommonVariables($INCLUDE);
+    my $string  = Foswiki::Func::expandCommonVariables($INCLUDE)."\n";
     $string =~ s/ {3}/\t/g;    #simplify to tabs
-    my @out;
     my @list;
     my $currentTopicIndex = -1;
 
@@ -92,14 +91,13 @@ sub MENULIST {
             }
         }
         else {
-
             #not a bullet
-            #          last;
         }
     }
 
     my $mode = $params->{mode} || 'collapse';
 
+    my @out;
     if ( $mode eq 'collapse' ) {
         if ( $currentTopicIndex == -1 ) {
 
@@ -115,61 +113,46 @@ sub MENULIST {
             }
         }
         else {
-
-            # show tree of options back from the current one
-            #find the node's root
-            my $startIdx = $currentTopicIndex;
-            for (
-                ;
-                ( $startIdx > 0 ) and ( $list[$startIdx]{length} > 1 ) ;
-                $startIdx--
-              )
-            {
-            }
-
-            #go backwards, then reverse later
+            #go backwards from current Topic to root
             my $lastIdx      = $currentTopicIndex;
             my $currentLevel = $list[$currentTopicIndex]{length};
             for ( my $idx = $lastIdx ; $idx > 0 ; $idx-- ) {
-                if ( ( $list[$idx]{length} == 1 ) ) {    #
+                if ( ( $list[$idx]{length} == 1 ) ) {
+                	$lastIdx = $idx;
                     push( @out, $idx );
                     last;
                 }
                 if ( $list[$idx]{length} <= $currentLevel ) {
                     $currentLevel = $list[$idx]{length};
+                	$lastIdx = $idx;
                     push( @out, $idx );
                 }
             }
             @out = reverse(@out);
 
-            #if the current node has childern, show those
-            $lastIdx = $currentTopicIndex + 1;
+            #if the current node has children, show those
+            $lastIdx = $currentTopicIndex;
+           	$currentLevel = $list[ $lastIdx ]{length};
             if (
                 ( $lastIdx <= $#list )
-                and ( $list[$lastIdx]{length} ==
-                    ( 1 + $list[$currentTopicIndex]{length} ) )
               )
             {
-                for ( my $idx = $lastIdx ; $idx < $#list ; $idx++ ) {
-                    $lastIdx = $idx;
+                for ( my $idx = $lastIdx+1 ; $idx <= $#list ; $idx++ ) {
                     if ( $list[$idx]{length} <=
-                        $list[$currentTopicIndex]{length} )
+                        $currentLevel )
                     {    #output until we go to level of the current again.
                         last;
                     }
                     if ( $list[$idx]{length} ==
-                        1 + $list[$currentTopicIndex]{length} )
+                        1 + $currentLevel )
                     {
+	                    $lastIdx = $idx;
                         push( @out, $idx );
                     }
                 }
             }
-            $currentLevel = $list[ $lastIdx - 1 ]{length};
-            for ( my $idx = $lastIdx ; $idx < $#list ; $idx++ ) {
-                if ( ( $list[$idx]{length} == 1 ) )
-                { # or ($list[$idx]{length} < $list[$currentTopicIndex]{length})) {          #output until we go below the level of the current again.
-                    last;
-                }
+            $currentLevel = $list[ $lastIdx ]{length};
+            for ( my $idx = $lastIdx+1 ; $idx <= $#list ; $idx++ ) {
                 if ( $list[$idx]{length} <= $currentLevel ) {
                     $currentLevel = $list[$idx]{length};
                     push( @out, $idx );
@@ -201,7 +184,11 @@ sub MENULIST {
             && ( $list[$idx]{length} <= $to ) )
         {
         	if ($from > 0) {
-        		$list[$idx]{tabs} = substr($list[$idx]{tabs}, $from-1);
+        		if (($from-1) > length($list[$idx]{tabs})) {
+        			print STDERR "PARSE ERROR: -$from--".$list[$idx]{tabs}."--".$list[$idx]{length}."--".$list[$idx]{string}."-\n";
+	        	} else {
+	        		$list[$idx]{tabs} = substr($list[$idx]{tabs}, $from-1);
+	        	}
         	}
         	
             my $str = $format;
