@@ -21,9 +21,9 @@ use strict;
 require Foswiki::Func;       # The plugins API
 require Foswiki::Plugins;    # For the API version
 
-our $VERSION          = '$Rev$';
-our $RELEASE          = '$Date$';
-our $SHORTDESCRIPTION = 'dynamic Folding menu list';
+our $VERSION           = '$Rev$';
+our $RELEASE           = '$Date$';
+our $SHORTDESCRIPTION  = 'dynamic Folding menu list';
 our $NO_PREFS_IN_TOPIC = 1;
 our $baseWeb;
 our $baseTopic;
