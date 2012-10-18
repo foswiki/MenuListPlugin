@@ -21,12 +21,13 @@ use strict;
 require Foswiki::Func;       # The plugins API
 require Foswiki::Plugins;    # For the API version
 
-our $VERSION          = '$Rev$';
-our $RELEASE          = '$Date$';
-our $SHORTDESCRIPTION = 'dynamic Folding menu list';
+our $VERSION           = '2.0';
+our $RELEASE           = '18-Nov-2012';
+our $SHORTDESCRIPTION  = 'dynamic Folding menu list';
 our $NO_PREFS_IN_TOPIC = 1;
 our $baseWeb;
 our $baseTopic;
+our $sessionUser;
 
 sub initPlugin {
     my ( $topic, $web, $user, $installWeb ) = @_;
@@ -38,8 +39,9 @@ sub initPlugin {
         return 0;
     }
 
-    $baseTopic = $topic;
-    $baseWeb   = $web;
+    $baseTopic   = $topic;
+    $baseWeb     = $web;
+    $sessionUser = $user;
 
     Foswiki::Func::registerTagHandler( 'MENULIST', \&MENULIST );
 
@@ -83,9 +85,12 @@ sub MENULIST {
         if ( $line =~ /^(\t+)\*\s+(.*)$/ ) {
             push( @list, { tabs => $1, length => length($1), string => $2 } );
 
-#	  my ($w, $t) = Foswiki::Func::normalizeWebTopicName($baseWeb, $list[$#list]{string});
+            my $webTopicRegex = "$baseWeb.$baseTopic";
+
+            #deal with both dots and slashes as web separators
+            $webTopicRegex =~ s/[.\/]/[.\/]/g;
             if (    ( $currentTopicIndex < 0 )
-                and ( $list[$#list]{string} =~ /.*$baseWeb\.$baseTopic.*/ ) )
+                and ( $list[$#list]{string} =~ /$webTopicRegex/ ) )
             {
                 $currentTopicIndex = $#list;
             }
@@ -189,6 +194,44 @@ sub MENULIST {
                 else {
                     $list[$idx]{tabs} = substr( $list[$idx]{tabs}, $from - 1 );
                 }
+            }
+
+            if ( !Foswiki::Func::isTrue( $params->{showdenied}, 0 ) ) {
+
+                #copied from Foswiki::Render..
+
+                # Spaced-out Wiki words with alternative link text
+                # i.e. [[$1][$3]]
+                my $webtopic;
+                if ( $list[$idx]{string} =~
+                    /\[\[([^\]\[\n]+)\](\[([^\]\n]+)\])?\]/ )
+                {
+                    $webtopic = $1;
+
+                 #                    } elsif ($list[$idx]{string} =~ s($STARTWW
+                }
+                elsif (
+                    $list[$idx]{string} =~ /
+                        (?:($Foswiki::regex{webNameRegex})\.)?
+                        ($Foswiki::regex{wikiWordRegex}|
+                            $Foswiki::regex{abbrevRegex})
+                        ($Foswiki::regex{anchorRegex})?/xom
+                  )
+                {
+                    $webtopic = ( defined($1) ? $1 . '.' . $2 : $2 );
+                }
+                my ( $w, $t ) =
+                  Foswiki::Func::normalizeWebTopicName( $baseWeb, $webtopic );
+                my $permitted = (
+                    Foswiki::Func::checkAccessPermission(
+                        'VIEW', $sessionUser, undef, $t, $w
+                    )
+                );
+
+        #print STDERR "---$sessionUser is $permitted allowed to view $w . $t\n";
+                next unless $permitted;
+
+   #TODO: it'd be faster to skip the entire branch once we find one that is out.
             }
 
             my $str = $format;
